@@ -12,7 +12,13 @@ Two bench-top machines for casting hollow silicone models (blood vessels, aneury
 
 **Full write-up:** [PROJECT_DETAILS.md](PROJECT_DETAILS.md) has the design, analysis, results, recommendations and an SOP summary for both machines.
 
-**Demo video:** [media/demo_video.mp4](media/demo_video.mp4)
+## Videos
+
+| Single-axis roller running | Dual-axis rotocaster running |
+|---|---|
+| [![Single-axis roller video](single-axis-roller/media/roller_running_preview.jpg)](single-axis-roller/media/roller_running.mp4) | [![Dual-axis rotocaster video](dual-axis-rotocaster/media/rotocaster_running_preview.jpg)](dual-axis-rotocaster/media/rotocaster_running.mp4) |
+
+Click a preview to open the video (on GitHub, click **View raw** to play or download it).
 
 ## Why rotational casting?
 
@@ -24,13 +30,14 @@ Hollow silicone models are made by pouring a measured amount of liquid silicone 
 silicone-casting-devices/
 ├── README.md                     this page
 ├── PROJECT_DETAILS.md            full details, recommendations and SOP summary
-├── media/demo_video.mp4
 ├── single-axis-roller/
 │   ├── docs/                     SOP, technical report, visual SOP poster (PDF/PNG)
 │   ├── cad/                      hub disc and motor seat STLs, parametric hub tool (HTML)
+│   ├── media/                    video of the roller running
 │   └── photos/
 └── dual-axis-rotocaster/
     ├── docs/                     SOP, technical report, visual SOP poster (PDF/PNG)
+    ├── media/                    video of the rotocaster running, both axes turning
     ├── firmware/                 Arduino controller sketch
     ├── cad/
     │   ├── source/               CadQuery (Python) parametric model of the whole machine

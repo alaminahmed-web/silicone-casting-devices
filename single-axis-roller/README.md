@@ -6,11 +6,14 @@ Upgraded single-axis roller for rotational casting of tubular silicone models. S
 |---|---|---|
 | ![](photos/roller_top_view.jpg) | ![](photos/roller_side_view.jpg) | ![](photos/roller_end_view.jpg) |
 
+**Video of the roller running:** [![Roller running](media/roller_running_preview.jpg)](media/roller_running.mp4)
+
 ## Files
 
 | Folder | Contents |
 |---|---|
 | `docs/` | Technical report TR-BFL-RLR-01, SOP SOP-BFL-RLR-01 and the one-page visual SOP poster |
+| `media/` | Video of the roller running (27 s) |
 | `cad/hub_disc_D47_T10.stl` | Redesigned motor-to-roller hub disc (Ø47 × 10 mm, 6.2 mm D-bore, M3 grub screw) |
 | `cad/MOTOR_SEAT_79x59_H56.stl` | Motor seat with cradle |
 | `cad/hub_disc_parametric_tool.html` | Browser tool used to design the hub: sliders for every dimension, collision warnings, cut-away view, STL export. Open it in a browser. |

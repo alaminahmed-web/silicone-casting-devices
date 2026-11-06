@@ -6,11 +6,14 @@ Nested-box gimbal that turns a Ø300 × 300 mm mould through 360° about two per
 |---|---|
 | ![](photos/rotocaster_front.jpg) | ![](photos/controller_panel.jpg) |
 
+**Video of the machine running, both axes turning:** [![Rotocaster running](media/rotocaster_running_preview.jpg)](media/rotocaster_running.mp4)
+
 ## Files
 
 | Folder | Contents |
 |---|---|
 | `docs/` | Technical report TR-BFL-ROT-01, SOP SOP-BFL-ROT-01 and the one-page visual SOP poster |
+| `media/` | Video of the rotocaster running (1 min 3 s) |
 | `firmware/rotocaster_controller/` | Arduino Uno sketch. Needs the **U8g2** library (Arduino IDE > Tools > Manage Libraries) |
 | `cad/source/` | CadQuery (Python) parametric model. `rotocaster_v2.py` builds the machine; the other modules make the connector, lid, counterweight and slip-ring parts |
 | `cad/printed-parts/` | STL of every printed part; the quantity is in the file name (`_x2` = print two) |

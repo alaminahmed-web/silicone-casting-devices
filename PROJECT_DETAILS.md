@@ -24,6 +24,8 @@ The full technical reports and SOPs are in each project's `docs/` folder. This f
 
 ![Single-axis roller](single-axis-roller/photos/roller_side_view.jpg)
 
+**Video:** [the roller running](single-axis-roller/media/roller_running.mp4) (27 s)
+
 ### Brief
 
 Upgrade the laboratory's existing silicone mould rotating device into a market-ready unit with better safety, reliability and user interface, and document it with an SOP (written and visual) and a technical report.
@@ -84,6 +86,8 @@ Below n<sub>c</sub> the silicone tumbles over the wall; well above it the silico
 ## Project 2: Dual-Axis Rotocaster
 
 ![Dual-axis rotocaster](dual-axis-rotocaster/photos/rotocaster_front_2.jpg)
+
+**Video:** [the rotocaster running with both axes turning](dual-axis-rotocaster/media/rotocaster_running.mp4) (1 min 3 s)
 
 ### Brief
 
@@ -150,7 +154,7 @@ The 3D-printed control box (166 × 96 × 63 mm, designed in CadQuery) has board 
 
 - 19 faults were logged and each was fixed in the CAD source, not by hand. Examples: a bearing bore on the wrong axis, a mould plate 340 mm wide for a 320 mm opening, a pour plug with no retention, and a Motor 2 coupler that could not be reached (fixed by rebuilding the top bridge with a second bearing and a new standoff).
 - A bearing fit gauge was printed first, and the bearing bore set to 22.2 mm from its result.
-- **First powered test:** the frame was counterweight-heavy, Motor 1 stalled lifting the ballast over the top and burnt out within seconds. Ballast was reduced to near-neutral balance, the motor replaced, and both axes then ran under independent speed control.
+- **First powered test:** the frame was counterweight-heavy, Motor 1 stalled lifting the ballast over the top and burnt out within seconds. Ballast was reduced to near-neutral balance, the motor replaced, and both axes then ran under independent speed control ([video](dual-axis-rotocaster/media/rotocaster_running.mp4)).
 - Staged commissioning: upload with motors unplugged, check 12 V for shorts, power with motors disconnected, run each motor off the frame on a 0.5 A current-limited supply, then one axis at a time.
 
 ### PDS compliance
