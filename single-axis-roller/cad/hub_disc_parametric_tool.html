@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>D-Bore Hub Disc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: workbench — fixed control rail on the left, full-bleed 3D stage on the right; stacks on phones. */
+:root{
+  --bg:#eceeec; --panel:#f8f9f7; --stage:#e3e7e5; --ink:#1b2120; --muted:#5b6662; --line:#d3d9d6;
+  --accent:#c2501d; --accent-ink:#ffffff; --warn:#a15c00; --warn-bg:#fbefd9;
+  --part:#e9e6c4; --edge:#6f6a4a; --grid:#c4cbc8;
+  --f-ui:"Archivo", "Segoe UI", system-ui, sans-serif;
+  --f-num:"IBM Plex Mono", ui-monospace, Consolas, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#121615; --panel:#191e1d; --stage:#0e1211; --ink:#e4e9e6; --muted:#93a09b; --line:#2b3331;
+  --accent:#ee7d47; --accent-ink:#1a0d06; --warn:#f0b35c; --warn-bg:#33270f;
+  --part:#d9d4a8; --edge:#3b3826; --grid:#26302d; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#121615; --panel:#191e1d; --stage:#0e1211; --ink:#e4e9e6; --muted:#93a09b; --line:#2b3331;
+  --accent:#ee7d47; --accent-ink:#1a0d06; --warn:#f0b35c; --warn-bg:#33270f;
+  --part:#d9d4a8; --edge:#3b3826; --grid:#26302d; color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 var(--f-ui)}
+.app{display:grid;grid-template-columns:330px minmax(0,1fr);height:100%}
+aside{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:20px 18px 28px;display:flex;flex-direction:column;gap:18px}
+h1{font-size:20px;font-weight:700;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:4px 0 0;font-size:13px}
+.spec{font-family:var(--f-num);font-size:12px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-variant-numeric:tabular-nums}
+.spec dt{color:var(--muted)} .spec dd{margin:0;text-align:right}
+fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+legend{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:0;margin-bottom:6px}
+.row{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px}
+.row label{font-size:13px}
+.row output{font-family:var(--f-num);font-size:12px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.row input,.row select{grid-column:1/-1;width:100%;accent-color:var(--accent);margin:0}
+.row select{font:13px var(--f-ui);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 8px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button{font:600 13px var(--f-ui);border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 12px;cursor:pointer}
+button:hover{border-color:var(--muted)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);flex:1 1 100%;padding:11px 12px;font-size:14px}
+button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+.warns{display:flex;flex-direction:column;gap:6px}
+.warn{background:var(--warn-bg);color:var(--warn);border-radius:6px;padding:7px 10px;font-size:12.5px}
+.note{font-size:12.5px;color:var(--muted);margin:0}
+.photos{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.photos img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:4px;border:1px solid var(--line);display:block}
+main{position:relative;background:var(--stage);min-width:0;min-height:0}
+#stage{position:absolute;inset:0}
+#stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.views{position:absolute;top:12px;right:12px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.views button{padding:6px 10px;font-size:12px;background:var(--panel)}
+.hint{position:absolute;left:14px;bottom:12px;font-size:12px;color:var(--muted);font-family:var(--f-num)}
+#status{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:14px;padding:16px;text-align:center}
+@media (max-width:760px){
+  .app{grid-template-columns:1fr;grid-template-rows:56vh auto;height:auto}
+  main{order:-1;min-height:56vh}
+  aside{border-right:0;border-top:1px solid var(--line);overflow:visible}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <header>
+      <h1>D-Bore Hub Disc</h1>
+      <p class="sub">Rebuilt from 3 photos. Sizes are estimated from the hand in the shot. Measure your part with calipers and set the real values below.</p>
+    </header>
+
+    <dl class="spec" id="spec"></dl>
+
+    <div class="btns">
+      <button class="primary" id="dl" type="button">Download STL</button>
+      <button id="section" type="button" aria-pressed="false">Cut-away view</button>
+      <button id="resin" type="button" aria-pressed="false">Clear resin look</button>
+      <button id="reset" type="button">Reset sizes</button>
+    </div>
+
+    <div class="warns" id="warns"></div>
+
+    <fieldset><legend>Disc body</legend>
+      <div class="row"><label for="dia">Outer diameter</label><output for="dia"></output><input id="dia" type="range" min="30" max="90" step="0.5"></div>
+      <div class="row"><label for="thick">Body thickness (without segments)</label><output for="thick"></output><input id="thick" type="range" min="3" max="30" step="0.5"></div>
+      <div class="row"><label for="chamfer">Edge chamfer</label><output for="chamfer"></output><input id="chamfer" type="range" min="0" max="2" step="0.1"></div>
+    </fieldset>
+
+    <fieldset><legend>Front hub &amp; D-bore</legend>
+      <div class="row"><label for="hubDia">Hub diameter</label><output for="hubDia"></output><input id="hubDia" type="range" min="8" max="30" step="0.5"></div>
+      <div class="row"><label for="hubH">Hub height above face</label><output for="hubH"></output><input id="hubH" type="range" min="0" max="40" step="0.5"></div>
+      <div class="row"><label for="shaftDia">Motor shaft diameter (D-type)</label><output for="shaftDia"></output><input id="shaftDia" type="range" min="3" max="10" step="0.1"></div>
+      <div class="row"><label for="shaftFlat">Shaft across the flat</label><output for="shaftFlat"></output><input id="shaftFlat" type="range" min="2" max="10" step="0.1"></div>
+      <div class="row"><label for="fit">Print clearance added to bore</label><output for="fit"></output><input id="fit" type="range" min="0" max="0.6" step="0.05"></div>
+      <div class="row"><label for="boreDepth">Bore depth</label><output for="boreDepth"></output><input id="boreDepth" type="range" min="2" max="45" step="0.5"></div>
+    </fieldset>
+
+    <fieldset><legend>Shaft set screw</legend>
+      <div class="row"><label for="screw">Screw type</label><output for="screw"></output>
+        <select id="screw">
+          <option value="m3nut">M3 grub screw + captive nut</option>
+          <option value="m3tap">M3 grub screw, tapped hole</option>
+          <option value="m4nut">M4 grub screw + captive nut</option>
+          <option value="none">No set screw</option>
+        </select>
+      </div>
+    </fieldset>
+
+    <fieldset><legend>Back segmented ring</legend>
+      <div class="row"><label for="ringH">Segment height above back face</label><output for="ringH"></output><input id="ringH" type="range" min="0" max="12" step="0.5"></div>
+      <div class="row"><label for="ringID">Centre circle diameter</label><output for="ringID"></output><input id="ringID" type="range" min="10" max="60" step="0.5"></div>
+      <div class="row"><label for="pocketDepth">Centre hollow depth into body</label><output for="pocketDepth"></output><input id="pocketDepth" type="range" min="0" max="25" step="0.5"></div>
+      <div class="row"><label for="edge">Edge band outside the segments</label><output for="edge"></output><input id="edge" type="range" min="0" max="10" step="0.5"></div>
+      <div class="row"><label for="segCount">Number of segments</label><output for="segCount"></output><input id="segCount" type="range" min="2" max="16" step="1"></div>
+      <div class="row"><label for="segGap">Gap between segments</label><output for="segGap"></output><input id="segGap" type="range" min="0.4" max="15" step="0.2"></div>
+    </fieldset>
+
+    <fieldset><legend>Mounting holes</legend>
+      <div class="row"><label for="holeCount">Number of holes</label><output for="holeCount"></output><input id="holeCount" type="range" min="0" max="6" step="1"></div>
+      <div class="row"><label for="holeDia">Hole diameter</label><output for="holeDia"></output><input id="holeDia" type="range" min="1.5" max="8" step="0.1"></div>
+      <div class="row"><label for="holeEdge">Hole edge to disc edge</label><output for="holeEdge"></output><input id="holeEdge" type="range" min="0.5" max="20" step="0.5"></div>
+    </fieldset>
+
+    <p class="note" id="printnote"></p>
+
+    <div>
+      <p class="note" style="margin-bottom:6px">Reference photos (D:\what image)</p>
+      <div class="photos">
+        <img alt="Front face with D-bore hub" src="file:///D:/what%20image/WhatsApp%20Image%202026-10-07%20at%202.18.47%20PM.jpeg" onerror="this.hidden=true">
+        <img alt="Side view showing hub height" src="file:///D:/what%20image/WhatsApp%20Image%202026-10-07%20at%202.18.47%20PM%20(1).jpeg" onerror="this.hidden=true">
+        <img alt="Back face with ribbed pocket" src="file:///D:/what%20image/WhatsApp%20Image%202026-10-07%20at%202.18.48%20PM.jpeg" onerror="this.hidden=true">
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <div id="stage"></div>
+    <div class="views">
+      <button type="button" data-view="iso">3D</button>
+      <button type="button" data-view="front">Front</button>
+      <button type="button" data-view="back">Back</button>
+      <button type="button" data-view="side">Side</button>
+    </div>
+    <div class="hint">drag: rotate · right-drag: pan · scroll: zoom · grid 10 mm</div>
+    <div id="status">Loading the 3D kernel…</div>
+  </main>
+</div>
+
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
+
+const statusEl = document.getElementById('status');
+
+// ---------- parameters (mm), estimated from the photos ----------
+const DEFAULTS = {
+  dia:47, thick:10, chamfer:0.8,
+  hubDia:18, hubH:20, shaftDia:6, shaftFlat:5.5, fit:0.2, boreDepth:14,
+  screw:'m3nut',
+  ringH:4.5, ringID:29, pocketDepth:5.5, edge:3.5, segCount:4, segGap:7,
+  holeCount:2, holeDia:3.8, holeEdge:3.5,
+};
+// bolt circle from the edge distance: hole's outer edge sits holeEdge in from the rim
+const pcdOf = p => p.dia - 2*p.holeEdge - p.holeDia;
+// bore = shaft + clearance
+const boreDiaOf = p => +p.shaftDia + +p.fit;
+const boreFlatOf = p => +p.shaftFlat + +p.fit;
+const UNIT = { holeCount:'', segCount:'', screw:'' };
+const SCREWS = {
+  m3nut:{ label:'M3', hole:3.3, nut:true,  af:5.5, nt:2.4 },
+  m3tap:{ label:'M3', hole:2.5, nut:false, af:5.5, nt:2.4 },
+  m4nut:{ label:'M4', hole:4.4, nut:true,  af:7.0, nt:3.2 },
+  none:null,
+};
+const KEY = 'hubdisc.params.v3';
+let P = { ...DEFAULTS };
+try { Object.assign(P, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(P)); } catch {} };
+
+const ids = Object.keys(DEFAULTS);
+function syncInputs(){
+  for (const id of ids){
+    const el = document.getElementById(id);
+    el.value = P[id];
+    el.parentElement.querySelector('output').textContent = fmt(id, P[id]);
+  }
+}
+const fmt = (id, v) => {
+  if (id === 'screw') return '';
+  const u = UNIT[id] ?? ' mm';
+  return (Number.isInteger(+v) ? v : (+v).toFixed(id === 'fit' ? 2 : 1)) + u;
+};
+
+// ---------- geometry kernel ----------
+let M;
+try {
+  const Module = (await import('https://cdn.jsdelivr.net/npm/manifold-3d@3.0.0/manifold.js')).default;
+  M = await Module(); M.setup();
+} catch (e) {
+  statusEl.textContent = "Couldn't load the 3D kernel. This page needs an internet connection to load it.";
+  throw e;
+}
+const { Manifold } = M;
+
+const boreR = p => Math.min(boreDiaOf(p), p.hubDia - 2)/2;
+const flatX = p => Math.min(boreFlatOf(p), boreR(p)*2) - boreR(p);
+// z layout from the bed up: segments [0, ringH] · disc body [ringH, ringH+thick] · hub on top
+const frontZ = p => +p.ringH + +p.thick;
+const topZ = p => frontZ(p) + +p.hubH;
+const hollowTop = p => +p.ringH + Math.min(+p.pocketDepth, p.thick - 1);
+// halfway down the shaft engagement, but never lower than mid-hub on short hubs
+const screwZ = p => Math.max(frontZ(p) + p.hubH/2, topZ(p) - p.boreDepth/2);
+const nutX = (p, sc) => Math.max((flatX(p) + p.hubDia/2)/2, flatX(p) + 0.8 + (sc.nt + 0.4)/2);
+
+function build(p, cut){
+  const trash = [];
+  const k = o => (trash.push(o), o);
+  const seg = 128;
+  const R = p.dia/2, T = +p.thick, rh = +p.ringH, front = frontZ(p);
+  const c = Math.min(p.chamfer, T/3, R/4);
+
+  // disc body, chamfered both edges, sitting on top of the segments
+  let body = (c > 0
+    ? k(Manifold.union([
+        k(Manifold.cylinder(c, R-c, R, seg)),
+        k(k(Manifold.cylinder(T-2*c, R, R, seg)).translate([0,0,c])),
+        k(k(Manifold.cylinder(c, R, R-c, seg)).translate([0,0,T-c])),
+      ]))
+    : k(Manifold.cylinder(T, R, R, seg)));
+  body = k(body.translate([0, 0, rh]));
+
+  // hole angles: first hole on +Y
+  const holeAng = [...Array(p.holeCount)].map((_, i) => 90 + i*360/p.holeCount);
+  const hr = pcdOf(p)/2;
+  const ir = Math.min(p.ringID/2, R - 1);
+
+  // back: separate segments standing ringH proud of the body's back face, between the
+  // centre hollow and the edge band. Gaps run along the hole line (+Y), so the holes sit in gaps.
+  if (rh > 0){
+    const orr = Math.max(R - p.edge, ir + 0.5);
+    let ring = k(k(Manifold.cylinder(rh + 0.01, orr, orr, seg)).subtract(k(k(Manifold.cylinder(rh + 2, ir, ir, seg)).translate([0,0,-1]))));
+    const pitch = 360/p.segCount;
+    for (let i = 0; i < p.segCount; i++){
+      const slot = k(k(k(Manifold.cube([R + 2, p.segGap, rh + 2])).translate([0, -p.segGap/2, -1])).rotate([0, 0, 90 + i*pitch]));
+      ring = k(ring.subtract(slot));
+    }
+    body = k(body.add(ring));
+  }
+
+  // centre hollow: open at the back, going pocketDepth into the body
+  const hz = hollowTop(p);
+  if (hz > rh) body = k(body.subtract(k(k(Manifold.cylinder(hz + 1, ir, ir, seg)).translate([0, 0, -1]))));
+
+  // front hub
+  if (p.hubH > 0) body = k(body.add(k(k(Manifold.cylinder(p.hubH + 0.01, p.hubDia/2, p.hubDia/2, seg)).translate([0,0,front - 0.01]))));
+
+  // D-bore from the hub top
+  const top = topZ(p);
+  const br = boreR(p);
+  const depth = Math.min(p.boreDepth, top);
+  const flat = Math.min(boreFlatOf(p), br*2);
+  let bore = k(Manifold.cylinder(depth + 1, br, br, 64));
+  if (flat < br*2) bore = k(bore.subtract(k(k(Manifold.cube([br*2, br*2 + 2, depth + 3])).translate([flat - br, -br - 1, -1]))));
+  body = k(body.subtract(k(bore.translate([0, 0, top - depth]))));
+
+  // set screw: radial hole along +X, square onto the D-flat, centred in the hub height,
+  // with a hex-nut slot dropped in from the hub top
+  const sc = SCREWS[p.screw];
+  if (sc){
+    const hubR = p.hubDia/2, flatX = flat - br;
+    const sz = screwZ(p);
+    const reach = (sz - sc.hole/2 >= front ? hubR : R) + 2;
+    body = k(body.subtract(k(k(k(Manifold.cylinder(reach, sc.hole/2, sc.hole/2, 32)).rotate([0, 90, 0])).translate([0, 0, sz]))));
+    if (sc.nut){
+      const nx = nutX(p, sc), w = sc.af + 0.3, t = sc.nt + 0.4, ac = sc.af/Math.cos(Math.PI/6);
+      const slot = k(k(Manifold.cube([t, w, top - sz + ac/2 + 1.3])).translate([nx - t/2, -w/2, sz - ac/2 - 0.3]));
+      body = k(body.subtract(slot));
+    }
+  }
+
+  // mounting holes
+  for (const a of holeAng){
+    const t = a*Math.PI/180;
+    body = k(body.subtract(k(k(Manifold.cylinder(front + 2, p.holeDia/2, p.holeDia/2, 48)).translate([hr*Math.cos(t), hr*Math.sin(t), -1]))));
+  }
+
+  const part = body;
+  let view = part;
+  // cut along the screw axis (remove y < 0) so the bore, screw hole and nut slot show in section
+  if (cut) view = k(part.subtract(k(k(Manifold.cube([400, 200, 200])).translate([-200, -200, -50]))));
+  const keep = new Set([part, view]);
+  for (const o of trash) if (!keep.has(o)) o.delete();
+  return { part, view };
+}
+
+function warnings(p){
+  const w = [], R = p.dia/2;
+  if (p.holeCount && pcdOf(p)/2 - p.holeDia/2 < p.hubDia/2 + 1) w.push('The mounting holes run into the hub. Reduce the hole-to-edge distance.');
+  const top = topZ(p);
+  if (boreDiaOf(p) > p.hubDia - 2) w.push('The bore is wider than the hub allows. It is capped at hub diameter − 2 mm.');
+  if (p.shaftFlat >= p.shaftDia) w.push('Across-the-flat is not smaller than the shaft, so the bore is round and the set screw has no flat to bite on.');
+  if (p.ringID/2 >= p.dia/2 - p.edge) w.push('The centre circle reaches the edge band, so there are no segments left.');
+  if (p.pocketDepth > p.thick - 1) w.push('The hollow is capped at body thickness − 1 mm so the front face stays closed.');
+  if (p.boreDepth >= top - hollowTop(p)) w.push('The bore breaks into the centre hollow. Make the bore or the hollow shallower.');
+  else if (top - p.boreDepth < hollowTop(p) + 0.8) w.push('Less than 0.8 mm separates the bore bottom from the centre hollow. Make the bore or the hollow shallower.');
+  const sc = SCREWS[p.screw];
+  if (sc){
+    const sz = screwZ(p);
+    if (sz - sc.hole/2 < top - p.boreDepth) w.push('The set screw is below the bottom of the bore and will not reach the shaft. Make the bore deeper.');
+    if (sz + sc.hole/2 > top - 0.6) w.push('The hub is too short for this screw. Make the hub taller.');
+    if (sc.nut && nutX(p, sc) + (sc.nt + 0.4)/2 > p.hubDia/2 - 1) w.push('The nut slot leaves less than 1 mm of hub wall. Make the hub diameter larger.');
+  }
+  return w;
+}
+
+// ---------- three.js stage ----------
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+stage.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(35, 1, 1, 2000);
+camera.up.set(0,0,1);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f8c, 1.6));
+const key = new THREE.DirectionalLight(0xffffff, 1.8); key.position.set(-80, -120, 160); scene.add(key);
+const rim = new THREE.DirectionalLight(0xffffff, 0.7); rim.position.set(120, 90, -60); scene.add(rim);
+
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+let grid;
+function makeGrid(){
+  if (grid) { scene.remove(grid); grid.geometry.dispose(); grid.material.dispose(); }
+  grid = new THREE.GridHelper(200, 20, css('--grid'), css('--grid'));
+  grid.rotation.x = Math.PI/2; grid.position.z = -0.05;
+  scene.add(grid);
+}
+
+const solidMat = new THREE.MeshStandardMaterial({ roughness:.55, metalness:0, side:THREE.DoubleSide });
+const resinMat = new THREE.MeshPhysicalMaterial({ roughness:.25, transmission:.75, thickness:8, ior:1.5, transparent:true, opacity:.92, side:THREE.DoubleSide });
+const edgeMat = new THREE.LineBasicMaterial({ transparent:true, opacity:.55 });
+function applyTheme(){
+  const part = new THREE.Color(css('--part'));
+  solidMat.color.copy(part); resinMat.color.copy(part).lerp(new THREE.Color(0xffffff), .2);
+  edgeMat.color.set(css('--edge'));
+  makeGrid();
+}
+
+let meshObj, edgeObj, current, resin = false, cut = false;
+
+function toGeometry(man){
+  const m = man.getMesh();
+  const np = m.numProp, vp = m.vertProperties, n = vp.length/np;
+  const pos = new Float32Array(n*3);
+  for (let i = 0; i < n; i++){ pos[3*i] = vp[np*i]; pos[3*i+1] = vp[np*i+1]; pos[3*i+2] = vp[np*i+2]; }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  g.setIndex(new THREE.BufferAttribute(new Uint32Array(m.triVerts), 1));
+  return g;
+}
+
+function rebuild(){
+  if (current){ current.part.delete(); if (current.view !== current.part) current.view.delete(); }
+  current = build(P, cut);
+  const g = toGeometry(current.view);
+  const shaded = toCreasedNormals(g, Math.PI/7);
+  const edges = new THREE.EdgesGeometry(g, 28);
+  g.dispose();
+  if (meshObj){ scene.remove(meshObj, edgeObj); meshObj.geometry.dispose(); edgeObj.geometry.dispose(); }
+  meshObj = new THREE.Mesh(shaded, resin ? resinMat : solidMat);
+  edgeObj = new THREE.LineSegments(edges, edgeMat);
+  scene.add(meshObj, edgeObj);
+  updateSpec();
+}
+
+function volumeOf(man){
+  if (typeof man.volume === 'function') return man.volume();
+  if (typeof man.getProperties === 'function') return man.getProperties().volume;
+  return NaN;
+}
+
+function updateSpec(){
+  const v = volumeOf(current.part)/1000; // cm³
+  const tris = current.part.numTri ? current.part.numTri() : current.part.getMesh().triVerts.length/3;
+  const bd = boreDiaOf(P).toFixed(2).replace(/0$/, ''), bf = boreFlatOf(P).toFixed(2).replace(/0$/, '');
+  const rows = [
+    ['Disc body', `Ø${P.dia} × ${P.thick} mm`],
+    ['Overall height', `${topZ(P).toFixed(1)} mm`],
+    ['Centre hollow', `Ø${P.ringID}, ${Math.min(P.pocketDepth, P.thick - 1)} into body`],
+    ['Hub', `Ø${P.hubDia} × ${P.hubH} mm`],
+    ['Motor shaft', `Ø${P.shaftDia} D, ${P.shaftFlat} flat`],
+    ['D-bore', `Ø${bd} / ${bf} flat`],
+    ['Set screw', grubText()],
+    ['Back ring', `${P.segCount} segments, ${P.ringH} mm tall`],
+    ['Holes', P.holeCount ? `${P.holeCount} × Ø${P.holeDia}, ${P.holeEdge} from edge` : 'none'],
+    ['Bolt circle', `Ø${pcdOf(P).toFixed(1)} PCD`],
+    ['Volume', `${v.toFixed(2)} cm³`],
+    ['Mass, PLA 100%', `${(v*1.24).toFixed(1)} g`],
+    ['Triangles', tris.toLocaleString()],
+  ];
+  document.getElementById('spec').innerHTML = rows.map(([a,b]) => `<dt>${a}</dt><dd>${b}</dd>`).join('');
+  document.getElementById('warns').innerHTML = warnings(P).map(t => `<div class="warn">${t}</div>`).join('');
+  const sc = SCREWS[P.screw];
+  document.getElementById('printnote').textContent =
+    `Print it back-face down, so the segments sit on the bed and the hub points up. The centre recess roof is a Ø${P.ringID} mm bridge; turn on supports if your printer sags on it.` +
+    (!sc ? '' : sc.nut
+      ? ` Drop the ${sc.label} nut into the slot on top of the hub before fitting the shaft, then turn the grub screw in from the side until it bears on the D-flat.`
+      : ' Tap the Ø2.5 mm side hole with an M3 tap, or let the grub screw cut its own thread in the plastic, then tighten it onto the D-flat.');
+}
+
+function grubText(){
+  const sc = SCREWS[P.screw];
+  if (!sc) return 'none';
+  const room = P.hubDia/2 - flatX(P);
+  const len = [3, 4, 5, 6, 8, 10, 12].filter(l => l <= room + 0.2).pop() ?? 3;
+  return `${sc.label} × ${len} grub${sc.nut ? ' + nut' : ''}`;
+}
+
+// ---------- camera views ----------
+function setView(name){
+  const d = Math.max(P.dia, topZ(P)) * 2.6;
+  const zc = topZ(P)/2;
+  const dirs = { iso:[-0.75,-0.95,0.85], front:[0,-0.0001,1], back:[0,0.0001,-1], side:[0,-1,0.08] };
+  const v = new THREE.Vector3(...dirs[name]).normalize().multiplyScalar(d);
+  controls.target.set(0,0,zc);
+  camera.position.set(v.x, v.y, v.z + zc);
+  controls.update();
+}
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+
+// ---------- STL export (binary) ----------
+function stlBlob(man){
+  const m = man.getMesh(), np = m.numProp, vp = m.vertProperties, tv = m.triVerts;
+  const nt = tv.length/3, buf = new ArrayBuffer(84 + nt*50), dv = new DataView(buf);
+  const hdr = 'D-bore hub disc, mm';
+  for (let i = 0; i < hdr.length; i++) dv.setUint8(i, hdr.charCodeAt(i));
+  dv.setUint32(80, nt, true);
+  let o = 84;
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), n = new THREE.Vector3(), e = new THREE.Vector3();
+  for (let t = 0; t < nt; t++){
+    const i0 = tv[3*t]*np, i1 = tv[3*t+1]*np, i2 = tv[3*t+2]*np;
+    a.set(vp[i0], vp[i0+1], vp[i0+2]); b.set(vp[i1], vp[i1+1], vp[i1+2]); c.set(vp[i2], vp[i2+1], vp[i2+2]);
+    n.subVectors(b, a).cross(e.subVectors(c, a)).normalize();
+    for (const v of [n, a, b, c]){ dv.setFloat32(o, v.x, true); dv.setFloat32(o+4, v.y, true); dv.setFloat32(o+8, v.z, true); o += 12; }
+    dv.setUint16(o, 0, true); o += 2;
+  }
+  return new Blob([buf], { type:'model/stl' });
+}
+window.__stl = () => stlBlob(current.part);
+document.getElementById('dl').addEventListener('click', () => {
+  const url = URL.createObjectURL(stlBlob(current.part));
+  const a = document.createElement('a');
+  a.href = url; a.download = `hub_disc_D${P.dia}_T${P.thick}.stl`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+});
+
+// ---------- controls wiring ----------
+let pending = false;
+for (const id of ids){
+  document.getElementById(id).addEventListener(id === 'screw' ? 'change' : 'input', e => {
+    P[id] = id === 'screw' ? e.target.value : +e.target.value;
+    e.target.parentElement.querySelector('output').textContent = fmt(id, P[id]);
+    save();
+    if (!pending){ pending = true; requestAnimationFrame(() => { pending = false; rebuild(); }); }
+  });
+}
+document.getElementById('reset').addEventListener('click', () => { P = { ...DEFAULTS }; save(); syncInputs(); rebuild(); setView('iso'); });
+const secBtn = document.getElementById('section');
+secBtn.addEventListener('click', () => { cut = !cut; secBtn.setAttribute('aria-pressed', cut); rebuild(); });
+const resBtn = document.getElementById('resin');
+resBtn.addEventListener('click', () => { resin = !resin; resBtn.setAttribute('aria-pressed', resin); meshObj.material = resin ? resinMat : solidMat; });
+
+function resize(){
+  const r = stage.getBoundingClientRect();
+  renderer.setSize(r.width, r.height, false);
+  camera.aspect = r.width / Math.max(1, r.height); camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stage);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', applyTheme);
+
+syncInputs(); applyTheme(); rebuild(); resize(); setView('iso');
+statusEl.hidden = true;
+(function loop(){ controls.update(); grid.visible = camera.position.z > 0;renderer.render(scene, camera); requestAnimationFrame(loop); })();
+</script>
+</body>
+</html>
